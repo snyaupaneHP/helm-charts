@@ -1,9 +1,11 @@
-name: Release Helm Charts
+name: Publish Helm
 
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - index.yaml
 
 permissions:
   contents: write
@@ -11,7 +13,7 @@ permissions:
   id-token: write
 
 jobs:
-  release:
+  build-index:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +32,8 @@ jobs:
         with:
           version: v3.14.4
 
-      - name: Run chart-releaser
+      # This step ONLY updates index.yaml
+      - name: Generate Helm index.yaml
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: charts
@@ -38,13 +41,16 @@ jobs:
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # chart-releaser commits index.yaml and packages,
-      # but Pages needs a directory to publish
-      - name: Prepare Pages content
+      # Refresh workspace to include committed index.yaml
+      - name: Refresh workspace
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: Prepare Pages artifact (index only)
         run: |
           mkdir -p public
           cp index.yaml public/
-          cp -r .cr-release-packages/* public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -52,7 +58,7 @@ jobs:
           path: public
 
   deploy:
-    needs: release
+    needs: build-index
     runs-on: ubuntu-latest
 
     steps:
