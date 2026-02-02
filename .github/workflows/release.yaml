@@ -1,4 +1,4 @@
-name: Release Helm Repo (RKE2 Compatible)
+name: Release Helm Repo (RKE2)
 
 on:
   push:
@@ -27,26 +27,31 @@ jobs:
         with:
           version: v3.14.4
 
-      - name: Prepare build directory
+      - name: Package charts
         run: |
           mkdir -p build
-
-      - name: Package Helm charts
-        run: |
           for chart in charts/*; do
             helm dependency build "$chart" || true
             helm package "$chart" --destination build
           done
 
-      - name: Generate Helm index.yaml
+      - name: Generate index.yaml
         run: |
           helm repo index build \
             --url https://snyaupanehp.github.io/helm-charts/build
 
+      - name: Prepare Pages content
+        run: |
+          mkdir -p public
+          cp -r build public/
+          if [ -f README.md ]; then
+            cp README.md public/
+          fi
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: public
 
   deploy:
     needs: build
