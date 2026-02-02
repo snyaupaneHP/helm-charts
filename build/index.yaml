@@ -1,0 +1,136 @@
+apiVersion: v1
+entries:
+  coturn:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.728527651+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 866ccae41cbcb06c94785495b5e7cb55658c01c77f08929e56287f9dbd5bc744
+    name: coturn
+    type: application
+    urls:
+    - coturn-0.3.4.tgz
+    version: 0.3.4
+  ecommerce-web:
+  - apiVersion: v2
+    appVersion: "2021-05-04"
+    created: "2026-01-30T17:40:57.728738812+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 319436cb880bda4dd6f38a09ae8808d4129c48b35d214df3095c9c4201d6f227
+    name: ecommerce-web
+    type: application
+    urls:
+    - ecommerce-web-0.3.0.tgz
+    version: 0.3.0
+  grpc-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.729094224+05:45"
+    description: A Helm chart for Kubernetes
+    digest: e48919223eea4ba35d3c49a20b1d8902669b65d71848eb139af8a3318a7867d3
+    name: grpc-service
+    type: application
+    urls:
+    - grpc-service-0.3.5.tgz
+    version: 0.3.5
+  micronaut-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.729313437+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 7d7458199a6d8cdf723724bba0e3a7e4ee01010344ed150bdb7b8f4925535a00
+    name: micronaut-service
+    type: application
+    urls:
+    - micronaut-service-0.3.0.tgz
+    version: 0.3.0
+  msg-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.72951293+05:45"
+    description: A Helm chart for Kubernetes
+    digest: c84dd378b7103ba0a233a43ce851340ba903b796e891b8d954551d1b166a6b61
+    name: msg-service
+    type: application
+    urls:
+    - msg-service-0.3.0.tgz
+    version: 0.3.0
+  parewa-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.72967872+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 877b2d98729614637ea92b05362072005b36d013ae84aeb907099fc39f7b10fe
+    name: parewa-api
+    type: application
+    urls:
+    - parewa-api-0.3.0.tgz
+    version: 0.3.0
+  quarkus-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.729853606+05:45"
+    description: A Helm chart for Kubernetes
+    digest: cd10b1413fa88e94a2c8c782751c19b9a9d799c75a3138629ac3596754f377ca
+    name: quarkus-service
+    type: application
+    urls:
+    - quarkus-service-0.3.0.tgz
+    version: 0.3.0
+  service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.730232758+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 6e577271ec67ec6ac73376bbcc0889a8332d437d84eeda3d164ed3e0b6a25ce0
+    name: service
+    type: application
+    urls:
+    - service-0.3.10.tgz
+    version: 0.3.10
+  squid:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.730470147+05:45"
+    description: A Helm chart for Kubernetes
+    digest: fb433e511d6395b6ccaf95d42ff4840ff280470fa01b3c2aa898dffba6a17ea5
+    name: squid
+    type: application
+    urls:
+    - squid-0.3.0.tgz
+    version: 0.3.0
+  trino:
+  - apiVersion: v2
+    appVersion: "375"
+    created: "2026-01-30T17:40:57.730788501+05:45"
+    description: Fast distributed SQL query engine for big data analytics that helps
+      you explore your data universe
+    digest: 7f2b5844f9db9d97bafdeb1f9eaafaf63d7fff7d23b249027deb4b29a9e7d805
+    name: trino
+    type: application
+    urls:
+    - trino-0.3.0.tgz
+    version: 0.3.0
+  tusd:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.731669143+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 6308db95e80491cdf6222c272a5bb3afffed75787db5440bd788b6bdf0199d19
+    name: tusd
+    type: application
+    urls:
+    - tusd-0.3.0.tgz
+    version: 0.3.0
+  web-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-30T17:40:57.732124615+05:45"
+    description: A Helm chart for Kubernetes
+    digest: 5f4d624f280d402344a3cc3ee66a9a47c0e317eb8d1f518185b87acb85613b43
+    name: web-service
+    type: application
+    urls:
+    - web-service-0.3.3.tgz
+    version: 0.3.3
+generated: "2026-01-30T17:40:57.728227671+05:45"
