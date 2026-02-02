@@ -1,11 +1,11 @@
-name: Publish Helm
+name: Release Helm Repo (RKE2 Compatible)
 
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - index.yaml
+    paths:
+      - charts/**
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-index:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,43 +22,34 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
       - name: Install Helm
         uses: azure/setup-helm@v4
         with:
           version: v3.14.4
 
-      # This step ONLY updates index.yaml
+      - name: Prepare build directory
+        run: |
+          mkdir -p build
+
+      - name: Package Helm charts
+        run: |
+          for chart in charts/*; do
+            helm dependency build "$chart" || true
+            helm package "$chart" --destination build
+          done
+
       - name: Generate Helm index.yaml
-        uses: helm/chart-releaser-action@v1.6.0
-        with:
-          charts_dir: charts
-          skip_existing: true
-        env:
-          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Refresh workspace to include committed index.yaml
-      - name: Refresh workspace
         run: |
-          git fetch origin main
-          git reset --hard origin/main
-
-      - name: Prepare Pages artifact (index only)
-        run: |
-          mkdir -p public
-          cp index.yaml public/
+          helm repo index build \
+            --url https://snyaupanehp.github.io/helm-charts/build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: .
 
   deploy:
-    needs: build-index
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
