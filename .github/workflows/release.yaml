@@ -1,24 +1,23 @@
-name: Release Charts
+name: Release Helm Charts
 
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - index.yaml
-      - build/index.yaml
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   release:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main (full history)
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
 
       - name: Configure Git
@@ -27,7 +26,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.14.4
 
@@ -35,30 +34,27 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: charts
-          pages_branch: main
+          skip_existing: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # IMPORTANT:
-      # chart-releaser commits index.yaml, but the runner
-      # still has the old working tree. We must refresh it.
-      - name: Refresh workspace to latest main
+      # chart-releaser commits index.yaml and packages,
+      # but Pages needs a directory to publish
+      - name: Prepare Pages content
         run: |
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
+          mkdir -p public
+          cp index.yaml public/
+          cp -r .cr-release-packages/* public/
 
-      - name: Sync index.yaml to build/
-        run: |
-          mkdir -p build
-          cp index.yaml build/index.yaml
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
 
-      - name: Commit build/index.yaml
-        run: |
-          git add build/index.yaml
-          if git diff --cached --exit-code; then
-            echo "No changes to commit."
-          else
-            git commit -m "Sync Helm index.yaml to build/"
-            git push origin main
-          fi
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
