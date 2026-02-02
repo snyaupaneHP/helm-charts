@@ -1,47 +1,64 @@
-name: Release Helm Repo (RKE2)
+name: Release Charts
 
 on:
   push:
     branches:
       - main
-    paths:
-      - charts/**
-
-permissions:
-  contents: write
+    paths-ignore:
+      - index.yaml
+      - build/index.yaml
 
 jobs:
   release:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout main (full history)
+        uses: actions/checkout@v3
         with:
+          ref: main
           fetch-depth: 0
 
-      - name: Install Helm
-        uses: azure/setup-helm@v4
-        with:
-          version: v3.14.4
-
-      - name: Build Helm repo
-        run: |
-          rm -rf build
-          mkdir -p build
-
-          for chart in charts/*; do
-            helm dependency build "$chart" || true
-            helm package "$chart" --destination build
-          done
-
-          helm repo index build \
-            --url https://snyaupanehp.github.io/helm-charts/build
-
-      - name: Commit build artifacts
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add build
-          git commit -m "Release Helm charts" || true
-          git push origin main
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.4
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: charts
+          pages_branch: main
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # IMPORTANT:
+      # chart-releaser commits index.yaml, but the runner
+      # still has the old working tree. We must refresh it.
+      - name: Refresh workspace to latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+
+      - name: Sync index.yaml to build/
+        run: |
+          mkdir -p build
+          cp index.yaml build/index.yaml
+
+      - name: Commit build/index.yaml
+        run: |
+          git add build/index.yaml
+          if git diff --cached --exit-code; then
+            echo "No changes to commit."
+          else
+            git commit -m "Sync Helm index.yaml to build/"
+            git push origin main
+          fi
