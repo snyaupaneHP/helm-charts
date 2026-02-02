@@ -9,11 +9,9 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,36 +25,23 @@ jobs:
         with:
           version: v3.14.4
 
-      - name: Package charts
+      - name: Build Helm repo
         run: |
+          rm -rf build
           mkdir -p build
+
           for chart in charts/*; do
             helm dependency build "$chart" || true
             helm package "$chart" --destination build
           done
 
-      - name: Generate index.yaml
-        run: |
           helm repo index build \
             --url https://snyaupanehp.github.io/helm-charts/build
 
-      - name: Prepare Pages content
+      - name: Commit build artifacts
         run: |
-          mkdir -p public
-          cp -r build public/
-          if [ -f README.md ]; then
-            cp README.md public/
-          fi
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add build
+          git commit -m "Release Helm charts" || true
+          git push origin main
