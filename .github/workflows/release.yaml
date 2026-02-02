@@ -3,7 +3,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - release
+      - main
 
 jobs:
   release:
@@ -30,7 +30,7 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
             charts_dir: charts
-            pages_branch: release
+            pages_branch: main
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
   copy-index:
