@@ -4,65 +4,61 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - index.yaml
+      - build/index.yaml
 
 jobs:
   release:
-    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
-    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
       contents: write
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout main (full history)
         uses: actions/checkout@v3
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
+        with:
+          version: v3.14.4
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-            charts_dir: charts
-            pages_branch: main
+          charts_dir: charts
+          pages_branch: main
         env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-  copy-index:
-    needs: release
-    if: needs.release.result == 'success'
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Move Updated File
+      # IMPORTANT:
+      # chart-releaser commits index.yaml, but the runner
+      # still has the old working tree. We must refresh it.
+      - name: Refresh workspace to latest main
         run: |
-          cp index.yaml build/
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
 
-      - name: Configure Git
+      - name: Sync index.yaml to build/
         run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p build
+          cp index.yaml build/index.yaml
 
-      - name: Commit and Push Changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit build/index.yaml
         run: |
-          git pull || true
           git add build/index.yaml
           if git diff --cached --exit-code; then
             echo "No changes to commit."
           else
-            git commit -m "Update index.yaml in build"
-            git push
+            git commit -m "Sync Helm index.yaml to build/"
+            git push origin main
           fi
