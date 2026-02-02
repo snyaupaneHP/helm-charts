@@ -1,0 +1,136 @@
+apiVersion: v1
+entries:
+  coturn:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:42.840605478Z"
+    description: A Helm chart for Kubernetes
+    digest: c9363b5616f4b7952d8c1ecf780625ab177e142f17fbb5546c5bdf6d8e1f3474
+    name: coturn
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/coturn-0.3.4/coturn-0.3.4.tgz
+    version: 0.3.4
+  ecommerce-web:
+  - apiVersion: v2
+    appVersion: "2021-05-04"
+    created: "2026-02-02T04:24:43.040537189Z"
+    description: A Helm chart for Kubernetes
+    digest: 6bfb006b8d3ea4a01c2654513466a1bebf8ce7863a68d5ac73292dd3f20b3cf2
+    name: ecommerce-web
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/ecommerce-web-0.3.0/ecommerce-web-0.3.0.tgz
+    version: 0.3.0
+  grpc-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:43.233617999Z"
+    description: A Helm chart for Kubernetes
+    digest: de9576d237d2a032dbc7ac7616f0c2b2b5d34da6bd3455282efdfe7b3dc130ce
+    name: grpc-service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/grpc-service-0.3.5/grpc-service-0.3.5.tgz
+    version: 0.3.5
+  micronaut-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:43.558083251Z"
+    description: A Helm chart for Kubernetes
+    digest: fd0386e0481fe60a57b92b4e19b1a47cad3f7041ef3c29d05e0856d8ef6db855
+    name: micronaut-service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/micronaut-service-0.3.0/micronaut-service-0.3.0.tgz
+    version: 0.3.0
+  msg-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:43.746870331Z"
+    description: A Helm chart for Kubernetes
+    digest: 692ff8699e3541744d8888d23c4162fbda50963cc94eaf62e99471db8e023c57
+    name: msg-service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/msg-service-0.3.0/msg-service-0.3.0.tgz
+    version: 0.3.0
+  parewa-api:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:43.913814787Z"
+    description: A Helm chart for Kubernetes
+    digest: a358bccabac69dda8a80416df9898ea947c4c18ac17900c116d5ed3bb3190e84
+    name: parewa-api
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/parewa-api-0.3.0/parewa-api-0.3.0.tgz
+    version: 0.3.0
+  quarkus-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:44.079555887Z"
+    description: A Helm chart for Kubernetes
+    digest: c54dad305cce210a91872c0606e078797ebb6262d55c031a3cc83dc1d92fb7ed
+    name: quarkus-service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/quarkus-service-0.3.0/quarkus-service-0.3.0.tgz
+    version: 0.3.0
+  service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:44.27872419Z"
+    description: A Helm chart for Kubernetes
+    digest: db2840c7d7ee270d24f66007dd4a4770b737c0274e1e47fd27ea93831139ac0a
+    name: service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/service-0.3.10/service-0.3.10.tgz
+    version: 0.3.10
+  squid:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:44.441558281Z"
+    description: A Helm chart for Kubernetes
+    digest: 9ee22f77a3f564cbc2e7405861afbfa4728524f180366599d10b91f27f88b891
+    name: squid
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/squid-0.3.0/squid-0.3.0.tgz
+    version: 0.3.0
+  trino:
+  - apiVersion: v2
+    appVersion: "375"
+    created: "2026-02-02T04:24:44.642191352Z"
+    description: Fast distributed SQL query engine for big data analytics that helps
+      you explore your data universe
+    digest: ff4ca211378008dbe8ec237fd741c59a6ff9eb55f394b07c7216f832efa0cdbc
+    name: trino
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/trino-0.3.0/trino-0.3.0.tgz
+    version: 0.3.0
+  tusd:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:44.90212467Z"
+    description: A Helm chart for Kubernetes
+    digest: 7d285463fbf8302b555b1f4eaf5f30f54abebd20a1c7a6fdb4a858263ecaef21
+    name: tusd
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/tusd-0.3.0/tusd-0.3.0.tgz
+    version: 0.3.0
+  web-service:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-02-02T04:24:45.091926507Z"
+    description: A Helm chart for Kubernetes
+    digest: 7d6078be4f93e3569194d699fb3cf33ad6608eae15ce2969d4b6cbf1b33165d2
+    name: web-service
+    type: application
+    urls:
+    - https://github.com/snyaupaneHP/helm-charts/releases/download/web-service-0.3.3/web-service-0.3.3.tgz
+    version: 0.3.3
+generated: "2026-02-02T04:24:45.091937477Z"
