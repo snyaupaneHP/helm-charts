@@ -131,7 +131,7 @@ tolerations: []
 affinity: {}
 
 httpRoute:
-  enabled: false
+  enabled: true
   parentRefs:
     - name: envoygateway
       kind: Gateway
@@ -151,7 +151,7 @@ httpRoute:
             value: /
 
 grpcRoute:
-  enabled: false
+  enabled: true
   parentRefs:
     - name: envoygateway
       kind: Gateway
