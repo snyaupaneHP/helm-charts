@@ -7,12 +7,12 @@ Helm charts for all the projects related to hamropatro.
 In this repo you can find the Helm Charts related to hamropatro services.
 
 ```sh
-> helm repo add hamropatro https://hamropatro.github.io/helm-charts
+> helm repo add hamropatro https://snyaupanehp.github.io/helm-charts
 > helm repo update
 
 > helm repo list
 NAME         URL 
-hamropatro   http://hamropatro.github.io/helm-charts
+hamropatro   http://snyaupanehp.github.io/helm-charts
 
 > helm install my-service hamropatro/web-service
 ```
