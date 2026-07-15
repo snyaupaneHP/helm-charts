@@ -3,19 +3,55 @@ name: Release Charts
 on:
   push:
     branches:
-      - main
+      - release
+    paths-ignore:
+      - index.yaml
+      - build/**
+      - .github/workflows/release.yaml
 
 jobs:
+  build:
+    name: Build charts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.4
+
+      - name: Lint and package charts
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          for chart in charts/*; do
+            [ -d "$chart" ] || continue
+            helm lint "$chart"
+            helm package "$chart" -d build
+          done
+          helm repo index build/
+
+      - name: Upload chart packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: helm-chart-build
+          path: build/
+
   release:
+    if: github.ref == 'refs/heads/release'
+    needs: build
     permissions:
       contents: write
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main (full history)
-        uses: actions/checkout@v3
+      - name: Checkout release (full history)
+        uses: actions/checkout@v4
         with:
-          ref: main
+          ref: release
           fetch-depth: 0
 
       - name: Configure Git
@@ -24,38 +60,42 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.14.4
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         with:
           charts_dir: charts
-          pages_branch: main
+          pages_branch: release
+          packages_with_index: true
+          skip_existing: true
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # IMPORTANT:
-      # chart-releaser commits index.yaml, but the runner
-      # still has the old working tree. We must refresh it.
-      - name: Refresh workspace to latest main
+      # chart-releaser updates release in a separate worktree and leaves this
+      # checkout dirty. Use a clean worktree before committing build/index.yaml.
+      - name: Sync build/index.yaml
         run: |
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
+          set -euo pipefail
+          git fetch origin release
 
-      - name: Sync index.yaml to build/
-        run: |
-          mkdir -p build
-          cp index.yaml build/index.yaml
+          sync_dir="$(mktemp -d)"
+          trap 'git worktree remove "$sync_dir" 2>/dev/null || true' EXIT
 
-      - name: Commit build/index.yaml
-        run: |
-          git add build/index.yaml
-          if git diff --cached --exit-code; then
+          git worktree add --detach "$sync_dir" origin/release
+          git -C "$sync_dir" config user.name "github-actions[bot]"
+          git -C "$sync_dir" config user.email "github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p "$sync_dir/build"
+          cp "$sync_dir/index.yaml" "$sync_dir/build/index.yaml"
+
+          git -C "$sync_dir" add build/index.yaml
+          if git -C "$sync_dir" diff --cached --exit-code; then
             echo "No changes to commit."
           else
-            git commit -m "Sync Helm index.yaml to build/"
-            git push origin main
+            git -C "$sync_dir" commit -m "Sync Helm index.yaml to build/"
+            git -C "$sync_dir" push origin HEAD:release
           fi
