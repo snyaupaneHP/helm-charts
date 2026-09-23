@@ -50,10 +50,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout release (full history)
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
-          ref: release
           fetch-depth: 0
 
       - name: Configure Git
