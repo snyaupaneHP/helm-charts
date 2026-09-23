@@ -1,6 +1,7 @@
 apiVersion: v2
 name: web-service
 description: A Helm chart for Kubernetes
+# Trigger release: chart content revalidated against template changes.
 
 # A chart can be either an 'application' or a 'library' chart.
 #
