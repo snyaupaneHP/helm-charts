@@ -43,7 +43,7 @@ jobs:
           path: build/
 
   release:
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main'
     needs: build
     permissions:
       contents: write
@@ -104,7 +104,7 @@ jobs:
 
   pages:
     name: Publish to GitHub Pages
-    if: github.ref == 'refs/heads/release'
+    if: github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main'
     needs: release
     permissions:
       pages: write
