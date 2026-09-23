@@ -1,3 +1,4 @@
+---
 name: Release Charts
 
 on:
@@ -100,3 +101,35 @@ jobs:
             git -C "$sync_dir" commit -m "Sync Helm index.yaml to build/"
             git -C "$sync_dir" push origin HEAD:release
           fi
+
+  pages:
+    name: Publish to GitHub Pages
+    if: github.ref == 'refs/heads/release'
+    needs: release
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release
+          fetch-depth: 1
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Serve from repo root: index.yaml and build/ are both here
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
