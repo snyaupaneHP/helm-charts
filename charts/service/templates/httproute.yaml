@@ -1,5 +1,5 @@
 
-{{- if .Values.httproute.enabled -}}
+{{- if .Values.httpRoute.enabled -}}
 {{- $fullName := include "service.fullname" . -}}
 {{- $svcPort := .Values.http.port -}}
 kind: HTTPRoute
@@ -8,23 +8,23 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "service.labels" . | nindent 4 }}
-  {{- with .Values.httproute.annotations }}
+  {{- with .Values.httpRoute.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   parentRefs:
-  {{- with .Values.httproute.gateways }}
+  {{- with .Values.httpRoute.gateways }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   hostnames:
-  {{- with .Values.httproute.hosts }}
+  {{- with .Values.httpRoute.hosts }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   rules:
     - matches:
-      {{- range .Values.httproute.paths }}
-      - path: 
+      {{- range .Values.httpRoute.paths }}
+      - path:
           type: PathPrefix
           value: {{ .path }}
       {{- end }}
