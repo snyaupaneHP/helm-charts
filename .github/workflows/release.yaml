@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release
+      - main
     paths-ignore:
       - index.yaml
       - build/**
