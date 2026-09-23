@@ -40,10 +40,9 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout release
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
-          ref: release
           fetch-depth: 0
 
       - name: Configure Git
@@ -65,27 +64,28 @@ jobs:
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Refresh workspace after chart-releaser commit
+      - name: Sync index.yaml to build/ on release branch
         run: |
+          set -euo pipefail
           git fetch origin release
-          git reset --hard origin/release
 
-      - name: Sync index.yaml to build/
-        run: |
-          set -euo pipefail
-          mkdir -p build
-          cp index.yaml build/index.yaml
-          cp README.md build/
+          sync_dir="$(mktemp -d)"
+          trap 'git worktree remove "$sync_dir" 2>/dev/null || true' EXIT
 
-      - name: Commit build output
-        run: |
-          set -euo pipefail
-          git add -A build/
-          if git diff --cached --exit-code; then
+          git worktree add --detach "$sync_dir" origin/release
+          git -C "$sync_dir" config user.name "github-actions[bot]"
+          git -C "$sync_dir" config user.email "github-actions[bot]@users.noreply.github.com"
+
+          mkdir -p "$sync_dir/build"
+          cp "$sync_dir/index.yaml" "$sync_dir/build/index.yaml"
+          cp "$sync_dir/README.md" "$sync_dir/build/README.md"
+
+          git -C "$sync_dir" add -A build/
+          if git -C "$sync_dir" diff --cached --exit-code; then
             echo "No build changes to commit."
           else
-            git commit -m "Sync Helm index to build/"
-            git push origin release
+            git -C "$sync_dir" commit -m "Sync Helm index to build/"
+            git -C "$sync_dir" push origin HEAD:release
           fi
 
   deploy:
